@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Top Navbar */
+        .topbar {
+            background: #1e293b;
+            color: white;
+            padding: 15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-btn {
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            /* hidden by default */
+            width: 250px;
+            height: 100%;
+            background: #0f172a;
+            padding-top: 20px;
+            transition: 0.3s;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px 20px;
+            text-decoration: none;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        .sidebar a:hover {
+            background: #1e293b;
+        }
+
+        /* Close button */
+        .close-btn {
+            text-align: right;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Main content */
+        .main-content {
+            padding: 20px;
+        }
+        .Julie {
+            color: red;
+            margin-left: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <i class="fa-solid fa-bars menu-btn" onclick="openSidebar()"></i>
+        <span class="Julie">Julie </span> Millers
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="close-btn">
+            <i class="fa-solid fa-xmark" style="color:white" onclick="closeSidebar()"></i>
+        </div>
+
+        <a href="index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+        <a href="#"><i class="fa-solid fa-dollar-sign"></i> Sales</a>
+        <a href="#"><i class="fa-solid fa-cart-shopping"></i> Orders</a>
+        <a href="#"><i class="fa-solid fa-hourglass-half"></i> Pending Orders</a>
+        <a href="#"><i class="fa-solid fa-circle-check"></i> Filled Orders</a>
+        <a href="#"><i class="fa-solid fa-chart-line"></i> Analytics</a>
+        <a href="#"><i class="fa-solid fa-chart-bar"></i> Reports</a>
+        <a href="#"><i class="fa-solid fa-user-shield"></i> Admins</a>
+        <a href="#"><i class="fa-solid fa-users"></i> Customers</a>
+        <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
+        <a href="#"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" onclick="closeSidebar()">
+        <div class="home-first-cards">
+            
+        </div>
+    </div>
+
+    <script>
+        function openSidebar() {
+            document.getElementById("sidebar").style.left = "0";
+        }
+
+        function closeSidebar() {
+            document.getElementById("sidebar").style.left = "-250px";
+        }
+    </script>
+
+</body>
+</html

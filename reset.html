@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reset Password</title>
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.card{
+  background:white;
+  padding:30px;
+  width:320px;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  text-align:center;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin-bottom:15px;
+  border-radius:8px;
+  border:1px solid #ddd;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:#667eea;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Reset Password</h2>
+
+  <form id="resetForm">
+    <input type="password" id="newPassword" placeholder="New Password" required>
+    <button type="submit">Reset</button>
+  </form>
+</div>
+
+<script>
+document.getElementById("resetForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  const newPassword = document.getElementById("newPassword").value;
+  const email = localStorage.getItem("resetEmail");
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  users = users.map(user => {
+    if(user.email === email){
+      return {...user, password:newPassword};
+    }
+    return user;
+  });
+
+  localStorage.setItem("users", JSON.stringify(users));
+
+  alert("Password reset successful!");
+  window.location.href = "signin.html";
+});
+</script>
+
+</body>
+</html>
