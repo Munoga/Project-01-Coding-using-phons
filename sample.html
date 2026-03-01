@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro Auth App</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:var(--bg);
+color:var(--text);
+transition:0.3s;
+}
+:root{
+--bg:#f1f3f6;
+--card:white;
+--text:#222;
+}
+.dark{
+--bg:#1e1e1e;
+--card:#2c2c2c;
+--text:white;
+}
+.screen{
+display:none;
+padding:20px;
+}
+.card{
+background:var(--card);
+padding:20px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+margin-bottom:15px;
+}
+input{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+button{
+padding:10px;
+border:none;
+border-radius:6px;
+background:#667eea;
+color:white;
+width:100%;
+cursor:pointer;
+}
+.appbar{
+background:#667eea;
+color:white;
+padding:15px;
+text-align:center;
+font-weight:bold;
+}
+.toggle{
+position:fixed;
+top:15px;
+right:15px;
+background:black;
+color:white;
+padding:5px 10px;
+border-radius:20px;
+cursor:pointer;
+font-size:12px;
+}
+.loader{
+display:none;
+text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="toggle" onclick="toggleDark()">Dark Mode</div>
+
+<!-- AUTH SCREEN -->
+<div id="auth" class="screen">
+
+<div class="card">
+<h2>Login</h2>
+<input type="email" id="email">
+<input type="password" id="password">
+<button onclick="login()">Login</button>
+<p onclick="showSignup()" style="cursor:pointer;">Create Account</p>
+</div>
+
+</div>
+
+<!-- SIGNUP -->
+<div id="signup" class="screen">
+<div class="card">
+<h2>Register</h2>
+<input type="email" id="regEmail">
+<input type="password" id="regPass">
+<select id="role">
+<option value="user">User</option>
+<option value="admin">Admin</option>
+</select>
+<button onclick="register()">Register</button>
+<p onclick="showLogin()" style="cursor:pointer;">Back to Login</p>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="screen">
+<div class="appbar">Dashboard</div>
+<div class="card">
+<h3 id="welcome"></h3>
+<button onclick="logout()">Logout</button>
+</div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="screen">
+<div class="appbar">Admin Panel</div>
+<div class="card">
+<canvas id="chart"></canvas>
+</div>
+<div class="card">
+<div id="users"></div>
+</div>
+<button onclick="logout()">Logout</button>
+</div>
+
+<div class="loader" id="loader">Loading...</div>
+
+<script type="module">
+
+// 🔥 PASTE YOUR FIREBASE CONFIG HERE
+const firebaseConfig = {
+apiKey: "PASTE_HERE",
+authDomain: "PASTE_HERE",
+projectId: "PASTE_HERE",
+storageBucket: "PASTE_HERE",
+messagingSenderId: "PASTE_HERE",
+appId: "PASTE_HERE"
+};
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, setDoc, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+const db = getFirestore();
+
+window.register = async function(){
+const email = regEmail.value;
+const pass = regPass.value;
+const role = document.getElementById("role").value;
+
+const userCred = await createUserWithEmailAndPassword(auth,email,pass);
+await setDoc(doc(db,"users",userCred.user.uid),{
+email,
+role,
+createdAt: new Date()
+});
+alert("Registered!");
+showLogin();
+}
+
+window.login = async function(){
+await signInWithEmailAndPassword(auth,email.value,password.value);
+}
+
+window.logout = async function(){
+await signOut(auth);
+showLogin();
+}
+
+onAuthStateChanged(auth, async(user)=>{
+if(user){
+const snap = await getDoc(doc(db,"users",user.uid));
+const data = snap.data();
+
+if(data.role==="admin"){
+showAdmin();
+loadUsers();
+}else{
+showDashboard(user.email);
+}
+}else{
+showLogin();
+}
+});
+
+async function loadUsers(){
+const query = await getDocs(collection(db,"users"));
+let usersHTML="";
+let count=0;
+query.forEach(doc=>{
+usersHTML+=`<p>${doc.data().email} - ${doc.data().role}</p>`;
+count++;
+});
+document.getElementById("users").innerHTML=usersHTML;
+
+new Chart(document.getElementById("chart"),{
+type:"bar",
+data:{
+labels:["Users"],
+datasets:[{label:"Total Users",data:[count]}]
+}
+});
+}
+
+function showLogin(){
+hideAll();
+authDiv.style.display="block";
+}
+function showSignup(){
+hideAll();
+signup.style.display="block";
+}
+function showDashboard(email){
+hideAll();
+dashboard.style.display="block";
+welcome.innerText="Welcome "+email;
+}
+function showAdmin(){
+hideAll();
+admin.style.display="block";
+}
+function hideAll(){
+document.querySelectorAll(".screen").forEach(s=>s.style.display="none");
+}
+
+window.toggleDark = function(){
+document.body.classList.toggle("dark");
+}
+
+</script>
+
+</body>
+</html>

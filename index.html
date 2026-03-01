@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        .logo h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        .remember-forgot label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+        }
+        .remember-forgot a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+            color: #999;
+        }
+        .divider::before,
+        .divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #e0e0e0;
+        }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+        }
+        .btn-social {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .btn-social:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+        }
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <div class="logo-icon">&#9889;</div>
+            <h1>Welcome Back</h1>
+        </div>
+
+        <form>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password">
+            </div>
+
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox"> Remember me
+                </label>
+                <a href="#">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-login">Sign In</button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <div class="social-login">
+            <button class="btn-social">G</button>
+            <button class="btn-social">f</button>
+            <button class="btn-social">X</button>
+        </div>
+
+        <p class="signup-link">
+            Don't have an account? <a href="#">Sign Up</a>
+        </p>
+    </div>
+    
+    
+    <script>
+        document.getElementById("signinForm").addEventListener("submit",function(e){
+e.preventDefault();
+
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+const emailInput = email.value;
+const passwordInput = password.value;
+
+// Admin login
+if(emailInput === "admin@gmail.com" && passwordInput === "admin123"){
+localStorage.setItem("adminLoggedIn", "true");
+window.location.href = "admin.html";
+return;
+}
+
+// Normal user login
+const user = users.find(u=>u.email === emailInput && u.password === passwordInput);
+
+if(user){
+localStorage.setItem("loggedInUser", user.email);
+window.location.href = "dashboard.html";
+}else{
+alert("Invalid credentials");
+}
+});
+    </script>
+</body>

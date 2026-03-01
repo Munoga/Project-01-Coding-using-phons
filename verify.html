@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify</title>
+<style>
+body{margin:0;font-family:Arial;background:linear-gradient(135deg,#667eea,#764ba2);
+display:flex;justify-content:center;align-items:center;height:100vh;}
+.card{background:white;padding:30px;width:340px;border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);text-align:center;}
+.code{display:flex;justify-content:space-between;margin:20px 0;}
+.code input{width:40px;height:45px;text-align:center;font-size:18px;border-radius:8px;border:1px solid #ddd;}
+button{width:100%;padding:12px;border:none;border-radius:8px;background:#667eea;color:white;font-weight:bold;}
+.resend{margin-top:10px;color:gray;cursor:not-allowed;}
+.timer{font-size:14px;color:red;}
+.success{display:none;font-size:18px;color:green;}
+</style>
+</head>
+<body>
+
+<div class="card">
+<h2>Verify Code</h2>
+
+<div class="code">
+<input maxlength="1"><input maxlength="1"><input maxlength="1">
+<input maxlength="1"><input maxlength="1"><input maxlength="1">
+</div>
+
+<div class="timer">60s</div>
+<button onclick="verify()">Verify</button>
+<div class="resend" onclick="resend()">Resend Code</div>
+<div class="success">✔ Verified!</div>
+</div>
+
+<script>
+const inputs=document.querySelectorAll(".code input");
+inputs.forEach((input,index)=>{
+input.addEventListener("input",()=>{
+if(input.value && index<5) inputs[index+1].focus();
+});
+});
+
+let time=60;
+const timerDisplay=document.querySelector(".timer");
+const resendBtn=document.querySelector(".resend");
+
+const interval=setInterval(()=>{
+time--;
+timerDisplay.textContent=time+"s";
+if(time<=0){
+clearInterval(interval);
+resendBtn.style.color="#667eea";
+resendBtn.style.cursor="pointer";
+timerDisplay.textContent="You can resend code";
+}
+},1000);
+
+function verify(){
+let code="";
+inputs.forEach(i=>code+=i.value);
+if(code===localStorage.getItem("verificationCode")){
+document.querySelector(".success").style.display="block";
+setTimeout(()=>window.location.href="reset.html",1500);
+}else{
+alert("Invalid code");
+}
+}
+
+function resend(){
+if(time>0) return;
+
+const newCode=Math.floor(100000+Math.random()*900000).toString();
+localStorage.setItem("verificationCode",newCode);
+alert("New Demo Code: "+newCode);
+location.reload();
+}
+</script>
+
+</body>
+</html>
